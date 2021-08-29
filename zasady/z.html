@@ -4,9 +4,17 @@
   <meta charset="UTF-8">
   <meta name="PLK">
   <title>Polska Liga Klanowa</title>
-  <link rel="stylesheet" href="styl.css" type="text/css" />
+  <link rel="stylesheet" href="z_styl.css" type="text/css" />
   <script src="script.js"></script>
   <link rel="icon" type="image/png" sizes="32x32" href="../img/Logo.png">
+</head>
+  <script>
+    function op(obj) {
+  x=document.getElementById(obj);
+  if(x.style.display == "none") x.style.display = "block";
+  else x.style.display = "none"
+  }
+  </script>
 <body>
 <div class="all">
     <div class="wstawka">
@@ -23,8 +31,128 @@
         <li><a href="../wsparcie/w.html">Wsparcie</a></li>
       </ol>
     </div>
-    <div class="Logo">Regulamin Ligi:</div>
+    <div class="Logo"><h3>Regulamin Ligi:</h3></div>
+    <div><h1 onClick="op('Prawo'); return false;" class="Logo">1. Prawo</h1>
+      <div class="text" id="Prawo" style="display:none">
+          Uczestnicząc w Polskiej Lidze Klanowej, uczestnicy w pełni akceptują zasady i 
+postępują zgodnie z instrukcjami administracji ligi. Decyzje mogą zastąpić poniższe 
+zasady, jeśli odpowiadają one zachowaniu ducha rywalizacji. Wszystkie przypadki 
+specjalne niewymienione w tym zestawie zasad wymagają indywidualnego zbadania 
+przez kierownictwo ligi. Dodatkowo, administracja może dodać kolejne punkty do 
+regulaminu w trakcie trwania rozgrywek co zostanie jasno wymienione w informacjach.
+Stream i nagrywanie meczy: 
+Prawa do transmisji i publikacji przysługują wyłącznie osobom wyznaczonym 
+przez Administrację. Nikomu nie wolno rozpowszechniać filmów ani obrazów bez 
+zgody Administracji. Biorąc udział, każdy gracz zgadza się udostępnić PSN-ID
+Streamerzy i osoby nagrywające mecze zgadzają się nie publikować gier na 
+swoim kanale YouTube. Zapisywanie na Twitchu jest zabronione, z wyjątkiem kanału 
+Ligowego. Na potrzeby wymiany nagrana gra może być ustawiona jako „niepubliczna” 
+w YouTube. 
+Odwołanie:
+Każda drużyna ma prawo odwołać się w jakiejś sprawie, w tym celu należy 
+skontaktować się z administratorem, który pociągjnie sprawę dalej. Gwarantujemy że 
+każda nawet najmniejsza sprawa zostanie przez nas rozpatrzona, ostateczną decyzje 
+podejmie caly Zespół Polskiej Ligi.
+
+      </div>
+    </div>
+    <div><h1 onClick="op('Ograniczenia'); return false;" class="Logo">2. Ograniczenia</h1>
+      <div class="text" id="Ograniczenia" style="display:none">
+         Do drużyny zapisujemy minimalnie 10, i maksymalnie 20 graczy z tego samego 
+        klanu.
+         Do gry dopuszczeni zostaną tylko Ci gracze którzy mają przypięty emblemat 
+        zgłoszonego klanu.
+         Dozwolone jest zapisanie dwóch drużyn z jednego klanu przy wystarczającej 
+        liczbie graczy.
+         Zabronione są transfery graczy w trakcie grania turnieju
+      </div>
+    </div>
+    <div><h1 onClick="op('System'); return false;" class="Logo">3. System gier</h1>
+      <div class="text" id="System" style="display:none">
+        a. Liga rozgrywana jest 7 vs 7 na X tierach w systemie 7/68.
+b. System 7/68 oznacza : liczba graczy w drużynie / suma poziomów pojazdów 
+w tej drużynie.
+c. Tryb gry to tylko i wyłącznie bitwa spotkaniowa.
+d. Czas bitwy : 10 minut.
+e. Liga rozgrywana jest na zasadzie "każdy z każdym" w systemie kołowym, 
+kolejność meczy udostępnimy odpowiednio wcześniej w #terminarz.
+f. Aktualizacja tabeli po każdym tygodniu.
+      </div>
+    </div>
+    <div><h1 onClick="op('Warunki'); return false;" class="Logo">4. Warunki zwycięstwa</h1>
+      <div class="text" id="Warunki" style="display:none">
+        Warunkiem zwycięstwa drużyny w bitwie spotkaniowej jest:
+a. Zajęcie bazy.
+b. Zniszczenie czołgów przeciwnika.
+c. Jeżeli upłynie czas bitwy przed spełnieniem warunków a i b : Wygrywa 
+drużyna która zniszczyła więcej czołgów ( fragi ), pomimo iż ekrań koncowy 
+wyświetli DRAW, czyli remis.
+ci. Jeżeli liczba fragów w drużynie jest taka sama : Wygrywa drużyna która 
+zrobiła większe uszkodzenia ( dmg ), w takiej sytuacji polecamy zrobić screena.
+d. Mecze ligowe rozgrywane są wedug zasady BO.5 ( do 3 zwycięstw ) 
+      </div>
+    </div>
+    <div><h1 onClick="op('Wyniki'); return false;" class="Logo">5. Wyniki</h1>
+      <div class="text" id="Wyniki" style="display:none">
+        Po spotkaniu wynik meczu należy przekazać na odpowiedni kanał na oficjalnym
+serwerze Ligi. W przypadku nieścisłości drużyna wygrana jest zoobowiązana do 
+zrobienia zrzutów ekranu i przesłaniu administracji.
+      </div>
+    </div>
+    <div><h1 onClick="op('Mapy'); return false;" class="Logo">6. Mapy</h1>
+      <div class="text" id="Mapy" style="display:none">
+        Mapy dla odpowiednich rund zostaną z góry wybrane przez zespół administracji,
+w tym mapa dogrywkowa i wrzuone na oficjalny serwer Ligi odpowiednio kilka dni 
+wcześniej.
+      </div>
+    </div>
+    <div><h1 onClick="op('Pokój'); return false;" class="Logo">7. Pokój szkoleniowy</h1>
+      <div class="text" id="Pokój" style="display:none">
+        a. Pokój szkoleniowy tworzy drużyna z lewej strony co będzie wynikało z tabeli
+rozgrywek.
+b. Drużyna tworząca pokój jest odpowiedzialna za otwarcie pokoju nie później 
+niż 10 minut przed planowanym rozpocząciem meczu z właściwymi 
+ustawieniami.
+c. W przypadku błędnych ustawień w pierwszej kolejności należy się dogadać 
+między sobą, jeśli nie przyniesie to rezultatu należy skontaktować się z 
+administratorem.
+d. W przypadku awarii serwera np. Gdy pokój nie startuje, lub serwer zostanie 
+czasowo zamknięty, w pierwszej kolejności należy jak najszybciej wrócić do 
+gry, otworzyć nowy pokój, zebrać osoby które należaly do tego pokoju i wybrać 
+te same czołgi, następnie poinformować administratora turnieju o sytuacji jeśli 
+czas na to pozwala. 
+<h2>Odkrywanie czołgów</h2>
+a. Drużyna z lewej strony w looby zawsze zaczyna wybór czołgów jako 
+pierwsza.
+b. Drużyna z prawej strony w lobby odpowiada swoimi wyborami czołów 
+które są kolejno wybierane.
+c. Nie jest błędem wybór dwóch, trzech czołgów wiecej niż wybrał i odsłonił 
+przeciwnik.
+d. Błędem jest wybór 7 czołgów gdy przeciwnik nie wybrał żadnego i należy to 
+zgłosić administracji.
+e. Maksymalny czas na wybranie czołgów to 5 min.
+<h2>Niekompletna / nieobecna drużyna </h2>
+a. Czas oczekiwania na nieobecną drużynę wynosi 5 minut od planowanego 
+rozpoczęcia meczu i musi być przestrzegany.
+b. Czas oczekiwania na niekompletną drużynę również wynosi 5 minut. 
+Drużyna powinna posiadać minimum 5 graczy aby rozpocząć grę.
+bi. Dopuszczamy możliwość grania w formacie 5 vs 5 i 6 vs 6 jeśli przeciwnik 
+nie zebrał wystarczającej ilości graczy, jadnak jest to jedynie forma 
+grzecznościowa na którą można się zgodzić lub nie. Nie ma takiego obowiązku 
+ze względu na poprawność taktyk i zmiany składu
+      </div>
+    </div>
+    <div><h1 onClick="op('czołgi'); return false;" class="Logo">8. Dozwolone czołgi</h1>
+      <div class="text" id="czołgi" style="display:none">
+        a. Wszystkie klasy czołgów są dozwolone.
+b. Dozwolone są maksymalnie 3 takie same czołgi.
+c. Dozwolone są maksymalnie 2 niszczyciele na drużynę.
+d. Dodatkowo : 
+ Valour T95/FV4201 Chieftain oraz T95/FV4201 Chieftain, uznawany jest 
+ za jeden i ten sam czołg, gdzie jedyną różnicą jest malowanie.
+      </div>
+    </div>
+  </div>
   </div>
 </body>
-
 </html>
