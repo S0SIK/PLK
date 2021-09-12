@@ -6,8 +6,20 @@
   <title>Polska Liga Klanowa</title>
   <link rel="stylesheet" href="u_styl.css" type="text/css" />
   <script src="script.js"></script>
+  <script>
+    function op(obj) {
+  x=document.getElementById(obj);
+  if(x.style.display == "none") x.style.display = "block";
+  else x.style.display = "none"
+  }
+  </script>
   <link rel="icon" type="image/png" sizes="32x32" href="../img/Logo.png">
 <body>
+  <div class="modal" id="modal">
+    <div class="modal-body" id="modal-body">
+    </div>
+  </div>
+  <div data-close-button type="button" class="overlay" id="overlay"></div>
 <div class="all">
     <div class="wstawka">
       <div class="logo"><img src="../img/Logo.png" width="50" height="50"></img>  Polska Liga Klanowa</div>
@@ -23,7 +35,10 @@
         <li><a href="../wsparcie/w.html">Wsparcie</a></li>
       </ol>
     </div>
-    <div class="Logo">Uczestnicy Ligi:</div>
+    <div class="Logo">Klany biorące udział w Lidze:</div>
+  </div>
+  <div class="lista" id="lista">
+  </div>
   </div>
 </body>
 
