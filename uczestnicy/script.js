@@ -4,205 +4,255 @@ const openModalButtons = document.querySelectorAll('[data-modal-target]');
 const closeModalButtons = document.querySelectorAll('[data-close-button]')
 
 let pageData = {
-    players: []
+  clans: []
 };
 
 function openModal(modal) {
-    if (modal == null) return
-    const overlay = document.getElementById('overlay')
-    modal.classList.add('active')
-    overlay.classList.add('active')
+  if (modal == null) return
+  const overlay = document.getElementById('overlay')
+  modal.classList.add('active')
+  overlay.classList.add('active')
 }
 
 function closeModal(modal) {
-    if (modal == null) return
+  if (modal == null) return
 
-    const overlay = document.getElementById('overlay')
-    modal.classList.remove('active')
-    overlay.classList.remove('active')
+  const overlay = document.getElementById('overlay')
+  modal.classList.remove('active')
+  overlay.classList.remove('active')
 }
-
 
 const toSnakeCase = str =>
   str &&
   str
-    .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
-    .map(x => x.toLowerCase())
-    .join('_');
+  .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
+  .map(x => x.toLowerCase())
+  .join('_');
 
 
-async function savePlayer(link, clan) {
+const removeLoader = (buttonDiv) => {
+  buttonDiv.childNodes[1].classList.remove("loader");
+}
 
-    let response = await fetch(link);
-  
-    if (response.status === 200) {
-      let data = await response.json();
-      data = data.data[0];
-      // handle data
+async function getBasicPlayerData(currentPlayerName, playerClan, isLast = false) {
 
-      clan = toSnakeCase(clan);
-      if(typeof pageData["players"][clan] == "undefined"){
-        
-        pageData["players"][clan] = [];
-        pageData["players"][clan].push(data);
-      } else{
-        pageData["players"][clan].push(data);
+
+  const playerAPILink = `https://api-console.worldoftanks.com/wotx/account/list/?application_id=${API_id}&search=${currentPlayerName}`;
+
+  let response = await fetch(playerAPILink);
+
+  if (response.status === 200) {
+    let data = await response.json();
+
+    const clan = toSnakeCase(playerClan);
+
+    if (typeof data.data === "undefined" || typeof currentPlayerName === "undefined") {
+
+      const button = document.getElementById(toSnakeCase(clan));
+      removeLoader(button);
+
+      return;
+    }
+
+    data = data.data[0];
+
+    // handle data
+
+
+    if (typeof pageData["clans"][clan] == "undefined") {
+
+      pageData["clans"][clan] = [];
+      pageData["clans"][clan].push(data);
+    } else {
+      pageData["clans"][clan].push(data);
+    }
+
+    pageData["clans"][clan].forEach(player => {
+
+      if (player.account_id == data.account_id) {
+        const account_id = data.account_id;
+        const playerStats = `https://api-console.worldoftanks.com/wotx/account/info/?application_id=${API_id}&account_id=${player.account_id}`
+
+        fetch(playerStats)
+          .then(response => response.json())
+          .then(data => {
+
+            const allStats = data.data[account_id].statistics.all;
+
+            player["data"] = {
+              "hits": allStats.hits,
+              "wins": allStats.wins,
+              "battles": allStats.battles,
+              "damage_dealt": allStats.damage_dealt,
+              "shots": allStats.shots,
+              "frags": allStats.frags,
+              "survived_battles": allStats.survived_battles,
+              "kd": (allStats.frags / (allStats.survived_battles)).toFixed(2),
+              "survived": (allStats.survived_battles * 100 / allStats.battles).toFixed(2) + '%',
+              "wins": (allStats.wins * 100 / allStats.battles).toFixed(2) + '%',
+              "dmg": (allStats.damage_dealt / allStats.battles).toFixed(0),
+              "hit": (allStats.hits * 100 / allStats.shots).toFixed(2) + '%',
+            };
+          }).then( () =>{
+            if (isLast) {
+              const button = document.getElementById(toSnakeCase(playerClan));
+              removeLoader(button);
+            }
+          })
       }
-      
 
-    }   
+    });
+  }
+
 }
 
 fetch('lista.json')
-    .then(response => response.json())
-    .then(data => {
-        for (const [key, value] of Object.entries(data)) {
+  .then(response => response.json())
+  .then(data => {
+    for (const [clan, value] of Object.entries(data)) {
 
-            const clan = key;
-            
-            for(let i = 1; i <= 20; i++){
-                // get player
-                const currentPlayerName = data[key]["p" + i];
+      const png = value.png
+      const tag = value.tag
 
-                // console.log("player", data[key]["p" + i]);
+      createButton(clan, tag, png);
+      getClanData(data, clan);
 
-                const playerAPILink  = `https://api-console.worldoftanks.com/wotx/account/list/?application_id=${API_id}&search=${currentPlayerName}`;
+    }
+  })
 
-                fetch(playerAPILink)
-                .then(response => response.json())
-                .then(data => {
-                    const playerId = data.data[0].account_id
-                
+async function getClanData(data, clan){
+  const lenn = Object.keys(data[clan]).length;
+  for (let i = 1; i < lenn; i++) {
 
-                savePlayer(playerAPILink, clan);
-                
+    const currentPlayerName = data[clan]["p" + i];
 
-                const API_playerstats_1 = `https://api-console.worldoftanks.com/wotx/account/info/?application_id=${API_id}&account_id=${playerId}`
-                    fetch(API_playerstats_1)
-                .then(response => response.json())
-                .then(data => {
-                    const hits = data.data[playerId].statistics.all.hits
-                    const wins = data.data[playerId].statistics.all.wins
-                    const battles = data.data[playerId].statistics.all.battles
-                    const damage_dealt = data.data[playerId].statistics.all.damage_dealt
-                    const shots = data.data[playerId].statistics.all.shots
-                    const frags= data.data[playerId].statistics.all.frags
-                    const survived_battles = data.data[playerId].statistics.all.survived_battles
-                    
-                    const Kd = (frags/(battles-survived_battles)).toFixed(2)
-                    const Survived = (survived_battles*100/battles).toFixed(2)+'%'
-                    const Wins = (wins * 100 /battles).toFixed(2)+'%'
-                    const DMG = (damage_dealt/battles).toFixed(0)
-                    const Hit = (hits * 100 / shots).toFixed(2)+'%'
-                  })
-                })
-              }
-                
-            const png = value.png
-            const tag = value.tag
+    if (lenn - 1 == i) {
+      await getBasicPlayerData(currentPlayerName, clan, true);
+    } else {
+      await getBasicPlayerData(currentPlayerName, clan);
+    }
 
-            const htm = `<div type='button' class="png2" data-modal-target="modal-${key}" id="klan" value="${key}"><img src="${png}" width="100" height="100"></img></div>`
+  }
+}
+ 
 
 
+function createButton(key, tag, png) {
 
+  // Przycisk
+  const htm =
+    `<div 
+    type='button'
+    class="png2"
+    data-modal-target="modal-${key}"
+    id="${toSnakeCase(key)}"
+    value="${key}">
+  <div class="loader"></div>
+  <img src="${png}" width="100" height="100"></img>
+  </div>`;
 
-            document.getElementById("lista")
-                .insertAdjacentHTML("beforeend", htm);
+  // Dodaj przycisk do listy
+  const lista = document.getElementById("lista");
 
-            document.querySelectorAll(`[data-modal-target]`).forEach(element => {
+  lista.insertAdjacentHTML("beforeend", htm);
 
-                if (element.dataset.modalTarget == `modal-${key}`) {
+  // Przycisk
+  const clanButton = document.getElementById(toSnakeCase(key));
 
-                    element.addEventListener('click', (tes) => {
+  // Akcje po wciśnięciu przycisku
+  clanButton.addEventListener('click', action => {
 
+    const clanPlayers = pageData["clans"][toSnakeCase(key)];
 
-                        const playersss = pageData["players"][toSnakeCase(key)];
-                        let aaa = [];
-                        playersss.forEach((p)=>{
-                            aaa +="<span>" + p.nickname.replace('-x', ' ').replace('-p', ' ') + "</span><br>";
-                        })
+    let playerNames = "";
+    let hit = "";
+    let dmg = "";
+    let wins = "";
+    let survived = "";
+    let kd = "";
 
-
-                        const KDbbb = pageData["players"][toSnakeCase(key)];
-                        let bbb = [];
-                        KDbbb.forEach((p)=>{
-                            bbb +="<span>" + p.nickname + "</span><br>";
-                        })
-
-                        const htm2 = `<div class="box" value="${key}">
-                        <div class="info" >
-                        <div class="png"><img src="${png}" width="200" height="200"></img>
-                        </div>
-                        <div class="info2">
-                          <div class="nazwa">[${tag}] ${key}</div>
-                          <div class="tabela">Tabela wynikw</div>
-                        </div>
-                        </div>
-                        <div class="nazwa">Drużyna:</div>
-                        <div class="players">
-                        <div class="border1">
-                          Stanowisko <br>
-                          Dowódca:<br>
-                          1 Oficer:<br>
-                          2 Oficer:<br>
-                          1 Gracz:<br>
-                          2 Gracz:<br>
-                          3 Gracz:<br>
-                          4 Gracz:<br>
-                          5 Gracz:<br>
-                          6 Gracz:<br>
-                          7 Gracz:<br>
-                          8 Gracz:<br>
-                          9 Gracz:<br>
-                          10 Gracz:<br>
-                          11 Gracz:<br>
-                          12 Gracz:<br>
-                          13 Gracz:<br>
-                          14 Gracz:<br>
-                          15 Gracz:<br>
-                          16 Gracz:<br>
-                          17 Gracz:
-                        </div>
-                        <div class="border2">
-                          <span> Nazwa: </span><br>
-                        ` + aaa  +  `
-                        </div>
-                        <div class="border1">
-                          Celność: <br>
-                          
-                        </div>
-                        <div class="border1">
-                          Średni dmg: <br>
-                          
-                        </div>
-                        <div class="border1">
-                          Win rate: <br>
-                        
-                        </div>
-                        <div class="border3">
-                        Survived: <br>
-                          
-                        </div>
-                        <div class="border3">
-                          K/D: <br>
-                          
-                        </div>
-                        </div>`
-                        document.getElementsByClassName("modal-body")[0].innerHTML = htm2;
-
-                        openModal(document.getElementById("modal"));
-                    });
-
-                }
-                const overlay = document.getElementById('overlay')
-
-                overlay.addEventListener('click', () => {
-                    const overlay = document.getElementById('overlay')
-                    modal.classList.remove('active')
-                    overlay.classList.remove('active')
-                })
-            })
-        
-          
-        }
+    clanPlayers.forEach((p) => {
+      playerNames += "<span>" + p.nickname.replace('-x', ' ').replace('-p', ' ') + "</span><br>";
+      hit += `<div>${p.data.hit}</div>`;
+      dmg += `<div>${p.data.dmg}</div>`;
+      wins += `<div>${p.data.wins}</div>`;
+      survived += `<div>${p.data.survived}</div>`;
+      kd += `<div>${p.data.kd}</div>`;
     })
+
+    const htm2 = `<div class="box" value="${key}">
+          <div class="info" >
+          <div class="png"><img src="${png}" width="200" height="200"></img>
+          </div>
+          <div class="info2">
+            <div class="nazwa">[${tag}] ${key}</div>
+            <div class="tabela">Tabela wynikw</div>
+          </div>
+          </div>
+          <div class="nazwa">Drużyna:</div>
+          <div class="players">
+          <div class="border1">
+            Stanowisko <br>
+            Dowódca:<br>
+            1 Oficer:<br>
+            2 Oficer:<br>
+            1 Gracz:<br>
+            2 Gracz:<br>
+            3 Gracz:<br>
+            4 Gracz:<br>
+            5 Gracz:<br>
+            6 Gracz:<br>
+            7 Gracz:<br>
+            8 Gracz:<br>
+            9 Gracz:<br>
+            10 Gracz:<br>
+            11 Gracz:<br>
+            12 Gracz:<br>
+            13 Gracz:<br>
+            14 Gracz:<br>
+            15 Gracz:<br>
+            16 Gracz:<br>
+            17 Gracz:
+          </div>
+          <div class="border2">
+            <span> Nazwa: </span><br>
+          ` + playerNames + `
+          </div>
+          <div class="border1">
+            Celność: <br>
+          ` + hit + `
+          </div>
+          <div class="border1">
+            Średni dmg: <br>
+          ` + dmg + `
+          </div>
+          <div class="border1">
+            Win rate: <br>
+          ` + wins + `
+          </div>
+          <div class="border3">
+          Survived: <br>
+          ` + survived + `
+          </div>
+          <div class="border3">
+            K/D: <br>
+          ` + kd + `
+          </div>
+          </div>`
+
+    // Zmiana zawartości modalu 
+    document.getElementsByClassName("modal-body")[0].innerHTML = htm2;
+
+    // Otwarcie modalu
+    openModal(document.getElementById("modal"));
+  });
+
+  // Overlay
+  const overlay = document.getElementById('overlay')
+  overlay.addEventListener('click', () => {
+    const overlay = document.getElementById('overlay')
+    modal.classList.remove('active')
+    overlay.classList.remove('active')
+  })
+
+}
