@@ -234,7 +234,7 @@ function createButton(key, tag, png) {
           Survived: <br>
           ` + survived + `
           </div>
-          <div class="border3">
+          <div class="border4">
             K/D: <br>
           ` + kd + `
           </div>
