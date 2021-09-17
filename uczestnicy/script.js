@@ -51,14 +51,15 @@ async function getBasicPlayerData(currentPlayerName, playerClan, isLast = false)
       const button = document.getElementById(toSnakeCase(clan));
       removeLoader(button);
 
+        //console.log(clan, currentPlayerName)
+
       return;
     }
 
     data = data.data[0];
 
     // handle data
-
-
+    
     if (typeof pageData["clans"][clan] == "undefined") {
 
       pageData["clans"][clan] = [];
@@ -66,9 +67,8 @@ async function getBasicPlayerData(currentPlayerName, playerClan, isLast = false)
     } else {
       pageData["clans"][clan].push(data);
     }
-
+   
     pageData["clans"][clan].forEach(player => {
-
       if (player.account_id == data.account_id) {
         const account_id = data.account_id;
         const playerStats = `https://api-console.worldoftanks.com/wotx/account/info/?application_id=${API_id}&account_id=${player.account_id}`
@@ -100,11 +100,10 @@ async function getBasicPlayerData(currentPlayerName, playerClan, isLast = false)
             }
           })
       }
-
     });
   }
-
 }
+        
 
 fetch('lista.json')
   .then(response => response.json())
@@ -158,7 +157,6 @@ function createButton(key, tag, png) {
 
   // Przycisk
   const clanButton = document.getElementById(toSnakeCase(key));
-
   // Akcje po wciśnięciu przycisku
   clanButton.addEventListener('click', action => {
 
@@ -170,7 +168,8 @@ function createButton(key, tag, png) {
     let wins = "";
     let survived = "";
     let kd = "";
-
+    
+    console.log(clanPlayers)
     clanPlayers.forEach((p) => {
       playerNames += "<span>" + p.nickname.replace('-x', ' ').replace('-p', ' ') + "</span><br>";
       hit += `<div>${p.data.hit}</div>`;
@@ -239,6 +238,8 @@ function createButton(key, tag, png) {
           ` + kd + `
           </div>
           </div>`
+
+          
 
     // Zmiana zawartości modalu 
     document.getElementsByClassName("modal-body")[0].innerHTML = htm2;
