@@ -111,9 +111,9 @@ fetch('lista.json')
     for (const [clan, value] of Object.entries(data)) {
 
       const png = value.png
-      const tag = value.tag
+      const name = value.name
 
-      createButton(clan, tag, png);
+      createButton(clan, name, png);
       getClanData(data, clan);
 
     }
@@ -136,7 +136,7 @@ async function getClanData(data, clan){
  
 
 
-function createButton(key, tag, png) {
+function createButton(key, name, png) {
 
   // Przycisk
   const htm =
@@ -184,7 +184,7 @@ function createButton(key, tag, png) {
           <div class="png"><img src="${png}" width="200" height="200"></img>
           </div>
           <div class="info2">
-            <div class="nazwa">[${tag}] ${key}</div>
+            <div class="nazwa">[${key}] ${name}</div>
             <div class="tabela">Tabela wynikw</div>
           </div>
           </div>
