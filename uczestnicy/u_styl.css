@@ -199,7 +199,8 @@ ol>li:first-child {
 .lista {
     margin: 20px;
     display: flex;
-    width: 800px;
+    flex-direction: row;
+    flex-wrap: wrap;
 }
 
 .loader {
