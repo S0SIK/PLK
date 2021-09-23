@@ -88,6 +88,7 @@ ol>li:first-child {
     margin-left: 10px;
     border: #faed7e solid 3px;
     width: 100px;
+    height: auto;
     border-radius: 10px;
     background: #1a1738;
 }
