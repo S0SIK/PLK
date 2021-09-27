@@ -25,9 +25,9 @@ function closeModal(modal) {
 const toSnakeCase = str =>
   str &&
   str
-  .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
-  .map(x => x.toLowerCase())
-  .join('_');
+    .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
+    .map(x => x.toLowerCase())
+    .join('_');
 
 
 const removeLoader = (buttonDiv) => {
@@ -51,7 +51,7 @@ async function getBasicPlayerData(currentPlayerName, playerClan, isLast = false)
       const button = document.getElementById(toSnakeCase(clan));
       removeLoader(button);
 
-        //console.log(clan, currentPlayerName)
+      //console.log(clan, currentPlayerName)
 
       return;
     }
@@ -59,7 +59,7 @@ async function getBasicPlayerData(currentPlayerName, playerClan, isLast = false)
     data = data.data[0];
 
     // handle data
-    
+
     if (typeof pageData["clans"][clan] == "undefined") {
 
       pageData["clans"][clan] = [];
@@ -67,16 +67,17 @@ async function getBasicPlayerData(currentPlayerName, playerClan, isLast = false)
     } else {
       pageData["clans"][clan].push(data);
     }
-   
+
     pageData["clans"][clan].forEach(player => {
       if (player.account_id == data.account_id) {
         const account_id = data.account_id;
-        const playerStats = `https://api-console.worldoftanks.com/wotx/account/info/?application_id=${API_id}&account_id=${player.account_id}`
 
+
+        const playerStats = `https://api-console.worldoftanks.com/wotx/account/info/?application_id=${API_id}&account_id=${player.account_id}`
+        const playerClans = `https://api-console.worldoftanks.com/wotx/clans/accountinfo/?application_id=${API_id}&account_id=${player.account_id}`
         fetch(playerStats)
           .then(response => response.json())
           .then(data => {
-
             const allStats = data.data[account_id].statistics.all;
 
             player["data"] = {
@@ -93,17 +94,25 @@ async function getBasicPlayerData(currentPlayerName, playerClan, isLast = false)
               "dmg": (allStats.damage_dealt / allStats.battles).toFixed(0),
               "hit": (allStats.hits * 100 / allStats.shots).toFixed(2) + '%',
             };
-          }).then( () =>{
+          }).then(() => {
             if (isLast) {
               const button = document.getElementById(toSnakeCase(playerClan));
               removeLoader(button);
             }
           })
+        fetch(playerClans)
+          .then(response => response.json())
+          .then(data => {
+
+            const clan_id = data.data[account_id].clan_id
+
+
+          })
       }
     });
   }
 }
-        
+
 
 fetch('lista.json')
   .then(response => response.json())
@@ -119,7 +128,7 @@ fetch('lista.json')
     }
   })
 
-async function getClanData(data, clan){
+async function getClanData(data, clan) {
   const lenn = Object.keys(data[clan]).length;
   for (let i = 1; i < lenn; i++) {
 
@@ -133,11 +142,12 @@ async function getClanData(data, clan){
 
   }
 }
- 
 
 
-function createButton(key, name, png) {
 
+function createButton(key, name, png, id) {
+
+  // id == clan_id
   // Przycisk
   const htm =
     `<div 
@@ -168,16 +178,18 @@ function createButton(key, name, png) {
     let wins = "";
     let survived = "";
     let kd = "";
-    
+
     console.log(clanPlayers)
     clanPlayers.forEach((p) => {
-      playerNames += "<span>" + p.nickname.replace('-x', ' ').replace('-p', ' ') + "</span><br>";
+      playerNames += `<div>${p.nickname.replace('-x', ' ').replace('-p', ' ')}</div>`;
       hit += `<div>${p.data.hit}</div>`;
       dmg += `<div>${p.data.dmg}</div>`;
       wins += `<div>${p.data.wins}</div>`;
       survived += `<div>${p.data.survived}</div>`;
       kd += `<div>${p.data.kd}</div>`;
     })
+
+
 
     const htm2 = `<div class="box" value="${key}">
           <div class="info" >
@@ -222,7 +234,7 @@ function createButton(key, name, png) {
           ` + hit + `
           </div>
           <div class="border1">
-            Średni dmg: <br>
+            Ś_dmg: <br>
           ` + dmg + `
           </div>
           <div class="border1">
@@ -239,7 +251,6 @@ function createButton(key, name, png) {
           </div>
           </div>`
 
-          
 
     // Zmiana zawartości modalu 
     document.getElementsByClassName("modal-body")[0].innerHTML = htm2;
